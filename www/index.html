@@ -11,10 +11,9 @@
     <script>
       // じゃんけんのハンド用変数（定数）
       var hand_gu=0;
-      var hand_choki=1;
-      var hand_pa=2;
       // ハンド表示用配列
-      var hand_text = ["ぐー", "ちょき", "ぱー"];
+      var hand_text = ["引いた"];
+      var hand2_text = ["大吉", "吉", "凶","大凶","中吉"];
       // 勝敗判定用変数（定数）
       var judge_win=0;
       var judge_draw=1;
@@ -22,11 +21,14 @@
       // 勝敗判定表
       var judge = [
         [judge_draw, judge_win, judge_loose],
+        [judge_draw, judge_loose, judge_win],
         [judge_loose, judge_draw, judge_win],
+        [judge_loose, judge_win, judge_draw],
         [judge_win, judge_loose, judge_draw],
+        [judge_win, judge_draw, judge_loose],
       ];
       // 勝敗結果表示用配列
-      var judge_text = ["勝ち", "あいこ", "負け"];
+      var judge_text = ["普通だね", "おめでとう！", "残念！","トホホ。。","あ"];
 
       // 連勝数記録
       var win_num = 0;
@@ -53,45 +55,34 @@
 
       function janken(player_hand){
         // コンピュータの手を決定
-        comp_hand = Math.floor(Math.random() * 3);
+        comp_hand2 = Math.floor(Math.random() * 5);
         // 勝敗判定
-        result = judge[player_hand][comp_hand];
+        result = judge[player_hand][comp_hand2];
         // 結果表示
-        msg="player:"+hand_text[player_hand]+"<br>"+
-            "comp:"+hand_text[comp_hand]+"<br>"+
-            "結果:" + judge_text[result];
+        msg="あなた:"+hand_text[player_hand]+"<br>"+
+            "結果:"+hand2_text[comp_hand2]+"<br>"+
+            "感想:" + judge_text[result];
         $("#result").html(msg);
         // 勝敗ごとの処理
         if(result == judge_win) {
-          win_num++;
-          $("#result2").html(win_num + "連勝!")
+          gameover();
         } else {
           gameover();
         }
       }
 
       function newgame() {
-        // ハイスコア表示
-        JankenScore.order(key, true).fetch()
-        .then(function(result){
-          high_score = result.get(key);
-          $("#highscore").html("ハイスコア：" + high_score + "連勝");
-        })
-        .catch(function(error){
-          $("#highscore").html("ハイスコア：" + high_score + "連勝");
-        });
-  
         win_num = 0;
         // ハンドボタン表示
         $(".hand").css("display", "inline");
         // ニューゲームボタン非表示
         $("#newgame").css("display", "none");
-        $("#result").html("じゃんけん・・・ぽん")
+        $("#result").html("何が出るかな..?")
         $("#result2").html("");
       }
 
       function gameover() {
-        var msg = "GAME OVER<br>";
+        var msg = "";
         if(win_num>0) {
           JankenScore.order(key, true).fetch()
           .then(function(result){
@@ -109,7 +100,7 @@
 
           msg += win_num +  "連勝でした。<br>";
         } else {
-          msg += "1回も勝てませんでした。<br>次は頑張ろう";
+          msg += "いい結果が出ましたか？<br>今年も頑張ろう！";
         }
         $("#result2").html(msg);
         // ハンドボタン非表示
@@ -125,12 +116,10 @@
     </script>
 </head>
 <body>
-  <h1 class="text-white bg-primary">じゃんけん 連勝チャレンジ！</h1>
+  <h1 class="text-white bg-primary">おみくじ</h1>
   <div id="highscore" class="text-white bg-secondary"></div>
-  <div class="mx-auto" style="width: 200px">
-    <a onclick="gu();" class="btn btn-outline-primary hand" role="button">ぐー</a>
-    <a onclick="choki();" class="btn btn-outline-primary hand" role="button">ちょき</a>
-    <a onclick="pa();" class="btn btn-outline-primary hand" role="button">ぱー</a>
+  <div class="mx-auto" style="width: 250px">
+    <a onclick="gu();" class="btn btn-outline-primary hand" role="button">引く</a>
     <a onclick="newgame();" class="btn btn-info text-white" id="newgame" role="button">New Game</a>
   </div>
   <div id="result" class="text-white bg-secondary">
