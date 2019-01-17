@@ -9,11 +9,11 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="keys.js"></script>
     <script>
-      // じゃんけんのハンド用変数（定数）
-      var hand_gu=0;
+      // おみくじ用変数（定数）
+      var omi_dai=0;
       // ハンド表示用配列
-      var hand_text = ["引いた"];
-      var hand2_text = ["大吉", "吉", "凶","大凶","中吉"];
+      var omi_text = ["引いた"];
+      var omi2_text = ["大吉","中吉","小吉"];
       // 勝敗判定用変数（定数）
       var judge_win=0;
       var judge_draw=1;
@@ -21,46 +21,44 @@
       // 勝敗判定表
       var judge = [
         [judge_draw, judge_win, judge_loose],
-        [judge_draw, judge_loose, judge_win],
         [judge_loose, judge_draw, judge_win],
-        [judge_loose, judge_win, judge_draw],
         [judge_win, judge_loose, judge_draw],
-        [judge_win, judge_draw, judge_loose],
       ];
       // 勝敗結果表示用配列
-      var judge_text = ["普通だね", "おめでとう！", "残念！","トホホ。。","あ"];
+      var judge_text = ["普通だね", "おめでとう！", "残念！"];
 
       // 連勝数記録
       var win_num = 0;
 
       // にふくら用おまじない
       var ncmb = new NCMB(appKey, clientKey);
-      var JankenScore = ncmb.DataStore("JankenScore");
+      var Omikuji = ncmb.DataStore("Omikuji");
       var key = "score";
 
       // ハイスコア
       var high_score = 0;
 
-      function gu() {
-        janken(hand_gu);
+      function dai() {
+        janken(omi_dai);
       }
 
-      function choki() {
-        janken(hand_choki);
+      function tyuu() {
+        janken(omi_tyuu);
       }
 
-      function pa() {
-        janken(hand_pa);
+      function shou() {
+        janken(omi_shou);
       }
+      
 
-      function janken(player_hand){
+      function janken(player_omi){
         // コンピュータの手を決定
-        comp_hand2 = Math.floor(Math.random() * 5);
+        comp_omi2 = Math.floor(Math.random() * 3);
         // 勝敗判定
-        result = judge[player_hand][comp_hand2];
+        result = judge[player_omi][comp_omi2];
         // 結果表示
-        msg="あなた:"+hand_text[player_hand]+"<br>"+
-            "結果:"+hand2_text[comp_hand2]+"<br>"+
+        msg="あなた:"+omi_text[player_omi]+"<br>"+
+            "結果:"+omi2_text[comp_omi2]+"<br>"+
             "感想:" + judge_text[result];
         $("#result").html(msg);
         // 勝敗ごとの処理
@@ -74,7 +72,7 @@
       function newgame() {
         win_num = 0;
         // ハンドボタン表示
-        $(".hand").css("display", "inline");
+        $(".omi").css("display", "inline");
         // ニューゲームボタン非表示
         $("#newgame").css("display", "none");
         $("#result").html("何が出るかな..?")
@@ -84,7 +82,7 @@
       function gameover() {
         var msg = "";
         if(win_num>0) {
-          JankenScore.order(key, true).fetch()
+          Omikuji.order(key, true).fetch()
           .then(function(result){
             high_score = result.get(key);
             if(win_num > high_score) {
@@ -95,7 +93,7 @@
           });
 
           // スコア記録
-          db = new JankenScore();
+          db = new Omikuji();
           db.set(key, win_num).save();
 
           msg += win_num +  "連勝でした。<br>";
@@ -104,7 +102,7 @@
         }
         $("#result2").html(msg);
         // ハンドボタン非表示
-        $(".hand").css("display", "none");
+        $(".omi").css("display", "none");
         // ニューゲームボタン表示
         $("#newgame").css("display", "inline");
       }
@@ -119,7 +117,7 @@
   <h1 class="text-white bg-primary">おみくじ</h1>
   <div id="highscore" class="text-white bg-secondary"></div>
   <div class="mx-auto" style="width: 250px">
-    <a onclick="gu();" class="btn btn-outline-primary hand" role="button">引く</a>
+    <a onclick="dai();" class="btn btn-outline-primary omi" role="button">引く</a>
     <a onclick="newgame();" class="btn btn-info text-white" id="newgame" role="button">New Game</a>
   </div>
   <div id="result" class="text-white bg-secondary">
