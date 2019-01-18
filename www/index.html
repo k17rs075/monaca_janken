@@ -13,7 +13,7 @@
       var omi_dai=0;
       // ハンド表示用配列
       var omi_text = ["引いた"];
-      var omi2_text = ["大吉","中吉","小吉"];
+      var omi2_text = ["大吉","吉","凶"];
       // 勝敗判定用変数（定数）
       var judge_win=0;
       var judge_draw=1;
@@ -116,7 +116,7 @@
 <body>
   <h1 class="text-white bg-primary">おみくじ</h1>
   <div id="highscore" class="text-white bg-secondary"></div>
-  <div class="mx-auto" style="width: 250px">
+  <div class="mx-auto" style="width: 300px">
     <a onclick="dai();" class="btn btn-outline-primary omi" role="button">引く</a>
     <a onclick="newgame();" class="btn btn-info text-white" id="newgame" role="button">New Game</a>
   </div>
